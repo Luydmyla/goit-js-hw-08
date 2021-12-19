@@ -11,16 +11,15 @@ const formData = {};
 const refs = {
     form: document.querySelector('.feedback-form'),
     textarea: document.querySelector('.feedback-form textarea'),
+    input: document.querySelector('.feedback-form input'),
 };
-
 // ========повесила слушателя события сабмит на форму ======================
 refs.form.addEventListener('submit', onFormSubmit);
 // ========повесила слушателя события инпут на поле для ввода текста==========
 // refs.textarea.addEventListener('input', throttle(onTextareaInput, 500));
 // ========повесила слушателя события инпут на форму======================
 refs.form.addEventListener('input', onFormDataInput);
-   
-
+ 
 
 // ===вызываем функцию, которая возвращает значение из инпутаб из локалсторедж
 // populateTexarea();
@@ -44,12 +43,16 @@ function onFormSubmit(event) {
 };
 // ========функция обработки события инпут=============
 function onFormDataInput(e) {
-    console.log(e.target.name);
-    console.log(e.target.value);
+    // console.log(e.target.name);
+    // console.log(e.target.value);
     
     // =====записываем в обьект формдата ключ-значение====
+    // if (!e.target.value) {
+    //     formData[e.target.name] = "";
+        
+    // }
     formData[e.target.name] = e.target.value;
-    console.log(formData);
+    // console.log(formData);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
 console.log(formData);
 };
@@ -58,18 +61,32 @@ function populateFormData() {
 // ==переменная сейвдДата хранит данные инпута из локалсторидж как строку
     const savedData = localStorage.getItem(STORAGE_KEY);
     console.log(savedData);
-     
-     // проверяем - не пустой ли сейвДата, если он есть, то дальше с ним работаем. Если его нету - ничего не делаем
-    if (savedData) {
-        console.log(savedData);
-        // =====преобразуем  строку в валидные данные (обьект)
+     // =====преобразуем  строку в валидные данные (обьект)
     const parseddData = JSON.parse(savedData);
     console.log(parseddData);
-        // ====обновляем  DOM - в поле текстэриа записываем значение сейвдмесседжа
-        console.log(formData);
-        refs.form.value = parseddData.value;
-    }
+     // проверяем - не пустой ли сейвДата, если он есть, то дальше с ним работаем. Если его нету - ничего не делаем
+    if (savedData) {
+        // console.log(savedData);
+        console.log(refs.input);
+        console.log(refs.message);
+        // ====обновляем  DOM - в поле текстэриа записываем значение сейвддата===
+        // console.log(formData);
+        console.log(parseddData);
+        // =====проверяю если в локалсторидж есть записи, то присваиваем эти значения полям нашей формы
+        // =====и обновляю формдата - добавляю туда эти значения
+        if (parseddData.email) {
+            refs.input.value = parseddData.email;
+            formData[refs.input.name] = parseddData.email;
+        }
+        if (parseddData.message) {
+            refs.textarea.value = parseddData.message;
+            formData[refs.textarea.name] = parseddData.message;
+        }
+ }
 }
+
+
+// =========ДЛЯ ОДНОГО ПОЛЯ ФОРМЫ==============
 // function onTextareaInput(event) {
 //     // ===значение в поле ввода текста====
 //     const message = event.target.value;
