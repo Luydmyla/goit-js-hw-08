@@ -18,7 +18,7 @@ refs.form.addEventListener('submit', onFormSubmit);
 // ========повесила слушателя события инпут на поле для ввода текста==========
 // refs.textarea.addEventListener('input', throttle(onTextareaInput, 500));
 // ========повесила слушателя события инпут на форму======================
-refs.form.addEventListener('input', onFormDataInput);
+refs.form.addEventListener('input', throttle(onFormDataInput, 500));
  
 
 // ===вызываем функцию, которая возвращает значение из инпутаб из локалсторедж
