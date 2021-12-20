@@ -2,7 +2,7 @@ import throttle from 'lodash.throttle';
 import '../css/common.css';
 import '../css/03-feedback.css';
 
-console.log(localStorage);
+// console.log(localStorage);
 // localStorage.setItem("feedback-form-state", "")
 // заменяем пратерн "магические числа и строки" на константу и используем ее
 const STORAGE_KEY = 'feedback-form-state';
@@ -29,17 +29,22 @@ refs.form.addEventListener('input', throttle(onFormDataInput, 500));
 function onFormSubmit(event) {
     // ===запрещаем браузеру действия по умолчанию - перезан=грузку страницы=====
     event.preventDefault();
-    // console.log(formData);
-    // if (!formData.value) {
-    //     console.log('заполните все поля формы');
-    
-    // } else {
+    //  проверяем, если хоть одно поле пустое, то форма не отправляется=====
+    if (!formData[refs.input.name] || !formData[refs.textarea.name]) {
+        console.log("заполните все поля формы");
+    }
+    else {
+        // ===выводим объект с полями email, message и текущими их значениями в консоль.
+    console.log(formData);
         console.log('отправляем форму');
         // ====очищаем форму после отправки формы====
         event.currentTarget.reset();
         // ====и после отправки формы очищаем локалсторедж тоже 
-        localStorage.removeItem(STORAGE_KEY);
-    // }
+    localStorage.removeItem(STORAGE_KEY);
+    formData[refs.input.name] = '';
+    formData[refs.textarea.name] = '';
+    // console.log(formData);
+    }
 };
 // ========функция обработки события инпут=============
 function onFormDataInput(e) {
@@ -47,43 +52,35 @@ function onFormDataInput(e) {
     // console.log(e.target.value);
     
     // =====записываем в обьект формдата ключ-значение====
-    // if (!e.target.value) {
-    //     formData[e.target.name] = "";
-        
-    // }
-    formData[e.target.name] = e.target.value;
-    // console.log(formData);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-console.log(formData);
-};
+    
+        formData[e.target.name] = e.target.value;
+        // console.log(formData);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+        // console.log(formData);
+    };
 
 function populateFormData() {
-// ==переменная сейвдДата хранит данные инпута из локалсторидж как строку
+    // ==переменная сейвдДата хранит данные инпута из локалсторидж как строку
     const savedData = localStorage.getItem(STORAGE_KEY);
-    console.log(savedData);
-     // =====преобразуем  строку в валидные данные (обьект)
+    // console.log(savedData);
+    // =====преобразуем  строку в валидные данные (обьект)
     const parseddData = JSON.parse(savedData);
+     // ===выводим объект с полями email, message и текущими их значениями в консоль.
     console.log(parseddData);
-     // проверяем - не пустой ли сейвДата, если он есть, то дальше с ним работаем. Если его нету - ничего не делаем
+    // проверяем - не пустой ли сейвДата, если он есть, то дальше с ним работаем. Если его нету - ничего не делаем
     if (savedData) {
-        // console.log(savedData);
-        console.log(refs.input);
-        console.log(refs.message);
-        // ====обновляем  DOM - в поле текстэриа записываем значение сейвддата===
-        // console.log(formData);
-        console.log(parseddData);
-        // =====проверяю если в локалсторидж есть записи, то присваиваем эти значения полям нашей формы
-        // =====и обновляю формдата - добавляю туда эти значения
-        if (parseddData.email) {
-            refs.input.value = parseddData.email;
-            formData[refs.input.name] = parseddData.email;
+            // console.log(formData);
+            // =====и обновляю формдата - добавляю туда эти значения
+            if (parseddData.email) {
+                refs.input.value = parseddData.email;
+                formData[refs.input.name] = parseddData.email;
+            }
+            if (parseddData.message) {
+                refs.textarea.value = parseddData.message;
+                formData[refs.textarea.name] = parseddData.message;
+            }
         }
-        if (parseddData.message) {
-            refs.textarea.value = parseddData.message;
-            formData[refs.textarea.name] = parseddData.message;
-        }
- }
-}
+    }
 
 
 // =========ДЛЯ ОДНОГО ПОЛЯ ФОРМЫ==============
